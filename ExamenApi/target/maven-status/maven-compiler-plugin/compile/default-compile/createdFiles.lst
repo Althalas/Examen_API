@@ -1,0 +1,5 @@
+com\humanbooster\Main.class
+com\humanbooster\DAO\TaskDAO.class
+com\humanbooster\controller\TaskController.class
+com\humanbooster\util\H2DBUtil.class
+com\humanbooster\model\Task.class

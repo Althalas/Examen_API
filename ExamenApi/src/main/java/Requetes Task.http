@@ -1,0 +1,163 @@
+### Variables
+@baseUrl = http://localhost:8080/api
+@contentType = application/json
+@acceptHeader = application/json
+
+### ===================================================
+### GET /tasks - Lister toutes les tâches
+### Réponse attendue: 200 OK avec une liste JSON (peut être vide)
+### ===================================================
+GET {{baseUrl}}/tasks
+Accept: {{acceptHeader}}
+
+### ===================================================
+### POST /tasks - Créer une nouvelle tâche (cas nominal)
+### Corps attendu: JSON (sans id)
+### Réponse attendue: 201 Created avec la tâche créée (incluant id, createdAt, updatedAt)
+### ===================================================
+POST {{baseUrl}}/tasks
+Content-Type: {{contentType}}
+Accept: {{acceptHeader}}
+
+{
+  "title": "Préparer la présentation",
+  "description": "Finaliser les slides pour la réunion de demain.",
+  "done": false
+}
+
+### ===================================================
+### POST /tasks - Créer une deuxième tâche
+### ===================================================
+POST {{baseUrl}}/tasks
+Content-Type: {{contentType}}
+Accept: {{acceptHeader}}
+
+{
+  "title": "Répondre aux e-mails",
+  "description": "Boîte de réception à zéro.",
+  "done": false
+}
+
+### ===================================================
+### POST /tasks - Créer une tâche avec description optionnelle vide
+### ===================================================
+POST {{baseUrl}}/tasks
+Content-Type: {{contentType}}
+Accept: {{acceptHeader}}
+
+{
+  "title": "Tâche simple sans description",
+  "description": ""
+}
+
+### ===================================================
+### POST /tasks - Erreur: Titre manquant
+### Réponse attendue: 400 Bad Request
+### ===================================================
+POST {{baseUrl}}/tasks
+Content-Type: {{contentType}}
+Accept: {{acceptHeader}}
+
+{
+  "description": "Cette tâche n'a pas de titre.",
+  "done": false
+}
+
+### ===================================================
+### POST /tasks - Erreur: Titre vide
+### Réponse attendue: 400 Bad Request
+### ===================================================
+POST {{baseUrl}}/tasks
+Content-Type: {{contentType}}
+Accept: {{acceptHeader}}
+
+{
+  "title": "",
+  "description": "Cette tâche a un titre vide.",
+  "done": false
+}
+
+### ===================================================
+### GET /tasks/{id} - Retourner une tâche spécifique
+### Remplacez {taskId} par un ID valide après création.
+### Réponse attendue: 200 OK avec la tâche ou 404 Not Found
+### ===================================================
+# Définissez une variable pour l'ID de la première tâche créée (généralement 1 si la BDD est vide au début)
+@firstTaskId = 1
+GET {{baseUrl}}/tasks/{{firstTaskId}}
+Accept: {{acceptHeader}}
+
+### ===================================================
+### GET /tasks/{id} - Erreur: Tâche non trouvée
+### Réponse attendue: 404 Not Found
+### ===================================================
+GET {{baseUrl}}/tasks/99999
+Accept: {{acceptHeader}}
+
+### ===================================================
+### PUT /tasks/{id} - Mettre à jour une tâche existante (cas nominal)
+### Remplacez {taskIdToUpdate} par un ID valide.
+### Corps attendu: JSON complet
+### Réponse attendue: 200 OK avec la tâche mise à jour ou 404 Not Found
+### ===================================================
+# Utilisons l'ID de la première tâche
+PUT {{baseUrl}}/tasks/{{firstTaskId}}
+Content-Type: {{contentType}}
+Accept: {{acceptHeader}}
+
+{
+  "title": "Préparer la présentation (URGENT)",
+  "description": "Finaliser les slides et relire les notes pour la réunion de demain matin.",
+  "done": true
+}
+
+### ===================================================
+### PUT /tasks/{id} - Erreur: Titre manquant lors de la mise à jour
+### Réponse attendue: 400 Bad Request
+### ===================================================
+PUT {{baseUrl}}/tasks/{{firstTaskId}}
+Content-Type: {{contentType}}
+Accept: {{acceptHeader}}
+
+{
+  "description": "Mise à jour sans titre.",
+  "done": true
+}
+
+### ===================================================
+### PUT /tasks/{id} - Erreur: Tâche non trouvée pour mise à jour
+### Réponse attendue: 404 Not Found
+### ===================================================
+PUT {{baseUrl}}/tasks/88888
+Content-Type: {{contentType}}
+Accept: {{acceptHeader}}
+
+{
+  "title": "Titre pour une tâche inexistante",
+  "description": "Description",
+  "done": false
+}
+
+
+### ===================================================
+### DELETE /tasks/{id} - Supprimer une tâche
+### Remplacez {taskIdToDelete} par un ID valide (par exemple, la deuxième tâche créée).
+### Réponse attendue: 204 No Content ou 404 Not Found
+### ===================================================
+@secondTaskId = 2
+DELETE {{baseUrl}}/tasks/{{secondTaskId}}
+Accept: {{acceptHeader}}
+
+### ===================================================
+### DELETE /tasks/{id} - Erreur: Tâche non trouvée pour suppression
+### Réponse attendue: 404 Not Found
+### ===================================================
+DELETE {{baseUrl}}/tasks/77777
+Accept: {{acceptHeader}}
+
+### ===================================================
+### Vérification après suppression: Essayer d'obtenir la tâche supprimée
+### Réponse attendue: 404 Not Found
+### ===================================================
+GET {{baseUrl}}/tasks/{{secondTaskId}}
+Accept: {{acceptHeader}}
